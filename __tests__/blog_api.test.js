@@ -28,21 +28,57 @@ test('blogs are returned as json', async () => {
 test('there are two blogs', async () => {
   const response = await api.get('/api/blogs');
   expect(response.body).toHaveLength(InitialBlogs.length);
-});
-
-test('the first blog url is example.com', async () => {
-  const response = await api.get('/api/blogs');
   expect(response.body[0].url).toBe('https://example.com');
+  expect(response.body[0].title).toBe('Example 1');
 });
 
-test('the first blog title is Example 1', async () => {
+test('blog id is defined', async () => {
+  const response = await api.get('/api/blogs').expect(200);
+  response.body.map((blog) => {
+    expect(blog.id).toBeDefined();
+  });
+});
+
+test('a valid blog can be added', async () => {
+  const newBlog = {
+    title: 'Example 3',
+    url: 'https://example.com',
+    likes: 7,
+  };
+
+  await api
+    .post('/api/blogs')
+    .send(newBlog)
+    .expect(201)
+    .expect('Content-Type', /application\/json/);
+
   const response = await api.get('/api/blogs');
-  expect(response.body[0].title).toBe('Example 1');
-}, 100000);
+  expect(response.body).toHaveLength(InitialBlogs.length + 1);
+});
+
+test('blog without likes gets default like 0', async () => {
+  const newBlog = {
+    title: 'example title 1',
+    url: 'https://example.com',
+  };
+
+  await api.post('/api/blogs').send(newBlog).expect(201);
+  const response = await api.get('/api/blogs');
+
+  expect(response.body).toHaveLength(InitialBlogs.length + 1);
+  expect(response.body[2].likes).toBe(0);
+});
+
+test('blog without title and url gets response 400', async () => {
+  const newBlog = {
+    likes: 7,
+  };
+
+  await api.post('/api/blogs').send(newBlog).expect(400);
+  const response = await api.get('/api/blogs');
+  expect(response.body).toHaveLength(InitialBlogs.length);
+});
 
 afterAll(async () => {
   await mongoose.connection.close();
 });
-
-//http = hyper text transfer protocol
-//used for data transfering over network
