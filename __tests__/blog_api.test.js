@@ -18,67 +18,99 @@ beforeEach(async () => {
   await newBlog.save({});
 });
 
-test('blogs are returned as json', async () => {
-  await api
-    .get('/api/blogs')
-    .expect(200)
-    .expect('Content-Type', /application\/json/);
+afterAll(async () => {
+  await mongoose.connection.close();
 });
 
-test('there are two blogs', async () => {
-  const response = await api.get('/api/blogs');
-  expect(response.body).toHaveLength(InitialBlogs.length);
-  expect(response.body[0].url).toBe('https://example.com');
-  expect(response.body[0].title).toBe('Example 1');
-});
+describe('GET /api/blogs', () => {
+  test('should return blogs as JSON', async () => {
+    await api
+      .get('/api/blogs')
+      .expect(200)
+      .expect('Content-Type', /application\/json/);
+  });
 
-test('blog id is defined', async () => {
-  const response = await api.get('/api/blogs').expect(200);
-  response.body.map((blog) => {
-    expect(blog.id).toBeDefined();
+  test('should return two blogs', async () => {
+    const response = await api.get('/api/blogs');
+    expect(response.body).toHaveLength(InitialBlogs.length);
+    expect(response.body[0].url).toBe('https://example.com');
+    expect(response.body[0].title).toBe('Example 1');
+  });
+
+  test('should have defined blog IDs', async () => {
+    const response = await api.get('/api/blogs').expect(200);
+    response.body.map((blog) => {
+      expect(blog.id).toBeDefined();
+    });
   });
 });
 
-test('a valid blog can be added', async () => {
-  const newBlog = {
-    title: 'Example 3',
-    url: 'https://example.com',
-    likes: 7,
-  };
+describe('POST /api/blogs', () => {
+  test('should add a valid blog', async () => {
+    const newBlog = {
+      title: 'Example 3',
+      url: 'https://example.com',
+      likes: 7,
+    };
 
-  await api
-    .post('/api/blogs')
-    .send(newBlog)
-    .expect(201)
-    .expect('Content-Type', /application\/json/);
+    await api
+      .post('/api/blogs')
+      .send(newBlog)
+      .expect(201)
+      .expect('Content-Type', /application\/json/);
 
-  const response = await api.get('/api/blogs');
-  expect(response.body).toHaveLength(InitialBlogs.length + 1);
+    const response = await api.get('/api/blogs');
+    expect(response.body).toHaveLength(InitialBlogs.length + 1);
+  });
+
+  test('should add a blog with default likes as 0', async () => {
+    const newBlog = {
+      title: 'example title 1',
+      url: 'https://example.com',
+    };
+
+    await api.post('/api/blogs').send(newBlog).expect(201);
+    const response = await api.get('/api/blogs');
+
+    expect(response.body).toHaveLength(InitialBlogs.length + 1);
+    expect(response.body[2].likes).toBe(0);
+  });
+
+  test('should return 400 when title and url are missing', async () => {
+    const newBlog = {
+      likes: 7,
+    };
+
+    await api.post('/api/blogs').send(newBlog).expect(400);
+    const response = await api.get('/api/blogs');
+    expect(response.body).toHaveLength(InitialBlogs.length);
+  });
 });
 
-test('blog without likes gets default like 0', async () => {
-  const newBlog = {
-    title: 'example title 1',
-    url: 'https://example.com',
-  };
-
-  await api.post('/api/blogs').send(newBlog).expect(201);
-  const response = await api.get('/api/blogs');
-
-  expect(response.body).toHaveLength(InitialBlogs.length + 1);
-  expect(response.body[2].likes).toBe(0);
+describe('DELETE /api/blogs', () => {
+  test('should delete a blog with id', async () => {
+    const response = await api.get('/api/blogs');
+    const id = response.body[0].id;
+    await api.delete(`/api/blogs/${id}`).expect(200);
+    const result = await api.get('/api/blogs');
+    expect(result.body).toHaveLength(InitialBlogs.length - 1);
+  });
 });
 
-test('blog without title and url gets response 400', async () => {
-  const newBlog = {
-    likes: 7,
-  };
+describe('PUT /api/blogs', () => {
+  test('should update a blog with id', async () => {
+    const response = await api.get('/api/blogs');
+    const id = response.body[0].id;
+    const updateBlog = {
+      title: 'example title 10',
+      url: 'https://example.com',
+      likes: 5,
+    };
 
-  await api.post('/api/blogs').send(newBlog).expect(400);
-  const response = await api.get('/api/blogs');
-  expect(response.body).toHaveLength(InitialBlogs.length);
-});
-
-afterAll(async () => {
-  await mongoose.connection.close();
+    await api.put(`/api/blogs/${id}`).send(updateBlog).expect(200);
+    const result = await api.get('/api/blogs');
+    expect(result.body[0].title).toContain('example title 10');
+    expect(result.body[0].url).toContain('https://example.com');
+    expect(result.body[0].likes).toBe(10);
+  });
 });
