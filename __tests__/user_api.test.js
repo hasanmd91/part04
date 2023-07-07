@@ -1,3 +1,4 @@
+const helper = require('../utils/helper_test');
 const supertest = require('supertest');
 const User = require('../models/user');
 const bcrypt = require('bcrypt');
@@ -9,19 +10,23 @@ describe('when there is initially one user in db', () => {
   beforeEach(async () => {
     await User.deleteMany({});
 
-    const passwordHash = await bcrypt.hash('abc123', 10);
-    const user = User({ username: 'hasan', passwordHash });
+    const passwordHash = await bcrypt.hash('test', 10);
+    const user = User({
+      name: 'test1',
+      username: 'test123',
+      password: passwordHash,
+    });
 
     await user.save();
   });
 
   test('creation succeeds with a fresh username', async () => {
-    const usersAtStart = await api.get('/api/users');
+    const usersAtStart = await helper.userinDb();
 
     const newUser = {
-      username: 'hasan123456',
-      name: 'Hasan Md',
-      password: 'salasana',
+      name: 'test2',
+      username: 'test1234',
+      password: 'test0123',
     };
 
     await api
@@ -30,11 +35,32 @@ describe('when there is initially one user in db', () => {
       .expect(201)
       .expect('Content-Type', /application\/json/);
 
-    const usersAtEnd = await api.get('/api/users');
-    console.log(usersAtEnd.body);
-    expect(usersAtEnd.body).toHaveLength(usersAtStart.body.length + 1);
+    const usersAtEnd = await helper.userinDb();
 
-    const usernames = usersAtEnd.body.map((u) => u.username);
+    expect(usersAtEnd).toHaveLength(usersAtStart.length + 1);
+
+    const usernames = usersAtEnd.map((u) => u.username);
     expect(usernames).toContain(newUser.username);
+  });
+
+  test('creation fails with proper statuscode and message if username is already taken', async () => {
+    const UserAtStart = await helper.userinDb();
+
+    const newUser = {
+      name: 'test2',
+      username: 'test1234',
+      password: 'test0123',
+    };
+
+    const result = await api
+      .post('/api/users')
+      .send(newUser)
+      .expect(400)
+      .expect('Content-Type', /application\/json/);
+
+    expect(result.body.error).toContain('expected `username` to be unique');
+
+    const userAtEnd = await helper.userinDb();
+    expect(userAtEnd).toEqual(UserAtStart);
   });
 });
