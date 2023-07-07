@@ -22,6 +22,8 @@ afterAll(async () => {
   await mongoose.connection.close();
 });
 
+// Test HTTP GET request
+
 describe('GET /api/blogs', () => {
   test('should return blogs as JSON', async () => {
     await api
@@ -44,6 +46,8 @@ describe('GET /api/blogs', () => {
     });
   });
 });
+
+// Test HTTP POST request
 
 describe('POST /api/blogs', () => {
   test('should add a valid blog', async () => {
@@ -87,15 +91,22 @@ describe('POST /api/blogs', () => {
   });
 });
 
+// Test HTTP DELETE request
+
 describe('DELETE /api/blogs', () => {
   test('should delete a blog with id', async () => {
-    const response = await api.get('/api/blogs');
-    const id = response.body[0].id;
+    const blogs = await api.get('/api/blogs');
+    const id = blogs.body[0].id;
+    const title = blogs.body[0].title;
     await api.delete(`/api/blogs/${id}`).expect(200);
-    const result = await api.get('/api/blogs');
-    expect(result.body).toHaveLength(InitialBlogs.length - 1);
+    const blogsAtEnd = await api.get('/api/blogs');
+    expect(blogsAtEnd.body).toHaveLength(InitialBlogs.length - 1);
+    const TitlesAtEnd = blogsAtEnd.body.map((blog) => blog.title);
+    expect(TitlesAtEnd).not.toContain(title);
   });
 });
+
+// Test HTTP PUT request
 
 describe('PUT /api/blogs', () => {
   test('should update a blog with id', async () => {
