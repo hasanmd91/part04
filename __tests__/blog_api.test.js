@@ -18,21 +18,17 @@ beforeEach(async () => {
   await newBlog.save({});
 });
 
-afterAll(async () => {
-  await mongoose.connection.close();
-});
-
 // Test HTTP GET request
 
-describe('GET /api/blogs', () => {
-  test('should return blogs as JSON', async () => {
+describe('when there is initially some notes saved', () => {
+  test('blogs are returned as JSON', async () => {
     await api
       .get('/api/blogs')
       .expect(200)
       .expect('Content-Type', /application\/json/);
   });
 
-  test('should return two blogs', async () => {
+  test('All blogs are returned', async () => {
     const response = await api.get('/api/blogs');
     expect(response.body).toHaveLength(InitialBlogs.length);
     expect(response.body[0].url).toBe('https://example.com');
@@ -44,6 +40,34 @@ describe('GET /api/blogs', () => {
     response.body.map((blog) => {
       expect(blog.id).toBeDefined();
     });
+  });
+
+  test('A specific note is within the returned note', async () => {
+    const response = await api.get('/api/blogs').expect(200);
+    const blogs = response.body.map((blog) => blog.title);
+    expect(blogs).toContain('Example 1');
+  });
+});
+
+// Test HTTP GET request for specific blog
+
+describe('viewing a specific note', () => {
+  test('succeeds with a valid id', async () => {
+    const blogsAtStart = await api.get('/api/blogs').expect(200);
+    const blogToView = blogsAtStart.body[0];
+
+    const blogsAtEnd = await api
+      .get(`/api/blogs/${blogToView.id}`)
+      .expect(200)
+      .expect('Content-Type', /application\/json/);
+
+    expect(blogToView).toEqual(blogsAtEnd.body);
+  });
+
+  test('fails with statuscode 400 if id is invalid', async () => {
+    const InvalidId = '84382u232738234';
+
+    await api.get(`/api/blogs/${InvalidId}`).expect(400);
   });
 });
 
@@ -124,4 +148,8 @@ describe('PUT /api/blogs', () => {
     expect(result.body[0].url).toContain('https://example.com');
     expect(result.body[0].likes).toBe(10);
   });
+});
+
+afterAll(async () => {
+  await mongoose.connection.close();
 });
