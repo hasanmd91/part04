@@ -18,13 +18,14 @@
   "author": "Hasan",
   "license": "ISC",
   "dependencies": {
+    "bcrypt": "^5.1.0",
     "cors": "^2.8.5",
     "cross-env": "^7.0.3",
     "dotenv": "^16.1.4",
     "express": "^4.18.2",
+    "express-async-errors": "^3.1.1",
     "mongoose": "^7.2.3",
-    "morgan": "^1.10.0",
-    "express-async-errors": "^3.1.1"
+    "morgan": "^1.10.0"
   },
   "devDependencies": {
     "eslint": "^8.42.0",
