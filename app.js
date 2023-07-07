@@ -3,7 +3,7 @@ require('express-async-errors');
 const app = express();
 const morgan = require('morgan');
 const cors = require('cors');
-const router = require('./controller/blogs.js');
+const blogRouter = require('./controller/blogs.js');
 const {
   errorHandeler,
   unknownEndpoint,
@@ -21,7 +21,7 @@ app.use(
   )
 );
 
-app.use('/api/blogs', router);
+app.use('/api/blogs', blogRouter);
 
 app.use(unknownEndpoint);
 app.use(errorHandeler);
