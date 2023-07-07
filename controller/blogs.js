@@ -1,5 +1,6 @@
 const blogRouter = require('express').Router();
 const Blog = require('../models/models');
+const User = require('../models/user');
 
 blogRouter.get('/', async (request, response) => {
   const blogs = await Blog.find({});
@@ -13,14 +14,19 @@ blogRouter.get('/:id', async (request, response) => {
 });
 
 blogRouter.post('/', async (request, response) => {
-  const { title, url, likes = 0 } = request.body;
+  const { title, url, likes = 0, autohor, userID } = request.body;
 
   if (!title || !url) {
     return response.status(400).json('content is missing');
   }
 
+  const user = await User.findById(userID);
+
+  console.log('whta is this user ', user);
+
   const blog = new Blog({
     title,
+    autohor,
     url,
     likes,
   });
