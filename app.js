@@ -5,6 +5,7 @@ const morgan = require('morgan');
 const cors = require('cors');
 const blogRouter = require('./controller/blogs.js');
 const userRouter = require('./controller/users.js');
+const loginRouter = require('./controller/login.js');
 const {
   errorHandeler,
   unknownEndpoint,
@@ -24,6 +25,7 @@ app.use(
 
 app.use('/api/blogs', blogRouter);
 app.use('/api/users', userRouter);
+app.use('/api/login', loginRouter);
 
 app.use(unknownEndpoint);
 app.use(errorHandeler);
