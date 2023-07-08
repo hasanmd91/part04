@@ -14,7 +14,7 @@ blogRouter.get('/:id', async (request, response) => {
 });
 
 blogRouter.post('/', async (request, response) => {
-  const { title, url, likes = 0, autohor, userID } = request.body;
+  const { title, url, likes = 0, author, userID } = request.body;
 
   if (!title || !url) {
     return response.status(400).json('content is missing');
@@ -22,13 +22,12 @@ blogRouter.post('/', async (request, response) => {
 
   const user = await User.findById(userID);
 
-  console.log('whta is this user ', user);
-
   const blog = new Blog({
     title,
-    autohor,
+    author,
     url,
     likes,
+    user: user.id,
   });
 
   const savedBlog = await blog.save();

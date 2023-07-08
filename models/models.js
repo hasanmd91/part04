@@ -5,7 +5,7 @@ const blogSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
-  autohor: {
+  author: {
     type: String,
   },
   url: {
@@ -13,7 +13,9 @@ const blogSchema = new mongoose.Schema({
     required: true,
   },
   likes: Number,
-  userID: String,
+  user: {
+    type: String,
+  },
 });
 
 blogSchema.set('toJSON', {
