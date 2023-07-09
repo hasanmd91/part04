@@ -1,6 +1,5 @@
 const blogRouter = require('express').Router();
 const Blog = require('../models/blogs');
-const User = require('../models/user');
 const JWT = require('jsonwebtoken');
 
 // GET ROUTE
@@ -19,14 +18,8 @@ blogRouter.get('/:id', async (request, response) => {
 // POST ROUTE
 
 blogRouter.post('/', async (request, response) => {
-  const decodedToken = JWT.verify(request.token, process.env.SECRET);
-
-  if (!decodedToken.id) {
-    return response.status(401).json('Token Invalid');
-  }
-  const user = await User.findById(decodedToken.id);
-
   const { title, url, likes = 0, author } = request.body;
+  const user = request.user;
 
   if (!title || !url) {
     return response.status(400).json('content is missing');
@@ -50,10 +43,6 @@ blogRouter.post('/', async (request, response) => {
 // DELETE ROUTE
 
 blogRouter.delete('/:id', async (request, response) => {
-  const decodedToken = JWT.verify(request.token, process.env.SECRET);
-  if (!decodedToken.id) {
-    return response.status(401).json('unauthorized user');
-  }
   const { id } = request.params;
 
   await Blog.findByIdAndDelete(id);
