@@ -17,14 +17,15 @@ blogRouter.get('/:id', async (request, response) => {
 const getTokenFrom = (request) => {
   const authorization = request.get('authorization');
   if (authorization && authorization.startsWith('bearer ')) {
-    return authorization.replace('Bearer ', '');
+    return authorization.replace('bearer ', '');
   }
   return null;
 };
 
 blogRouter.post('/', async (request, response) => {
+  console.log(request);
   const decodedToken = JWT.verify(getTokenFrom(request), process.env.SECRET);
-  console.log(decodedToken);
+  console.log('this is decoded token ', decodedToken);
   if (!decodedToken.id) {
     return response.status(401).json('Token Invalid');
   }
