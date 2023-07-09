@@ -25,17 +25,6 @@ beforeEach(async () => {
   await newBlog.save({});
 });
 
-//
-
-test('adding a blog will fail if user is unauthorized ', async () => {
-  const user = {
-    username: 'test12',
-    password: 'test',
-  };
-  const USER = await api.post('/api/login').send(user).expect(401);
-  expect(USER.body.token).not.toBeDefined();
-});
-
 // Test HTTP GET request
 
 describe('when there is initially some notes saved', () => {
@@ -92,6 +81,16 @@ describe('viewing a specific note', () => {
 // Test HTTP POST request
 
 describe('POST /api/blogs', () => {
+  test('adding a blog will fail if user is unauthorized ', async () => {
+    const user = {
+      username: 'test12',
+      password: 'test',
+    };
+    const USER = await api.post('/api/login').send(user).expect(401);
+    const invalidToken = USER.body.token;
+    expect(invalidToken).not.toBeDefined();
+  });
+
   test('should add a valid blog', async () => {
     const newBlog = {
       title: 'Example 3',
