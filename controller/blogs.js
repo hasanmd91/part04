@@ -3,6 +3,8 @@ const Blog = require('../models/blogs');
 const User = require('../models/user');
 const JWT = require('jsonwebtoken');
 
+// GET ROUTE
+
 blogRouter.get('/', async (request, response) => {
   const blogs = await Blog.find({}).populate('user', { name: 1, username: 1 });
   response.status(200).json(blogs);
@@ -13,6 +15,8 @@ blogRouter.get('/:id', async (request, response) => {
   const blog = await Blog.findById(id);
   response.status(200).json(blog);
 });
+
+// POST ROUTE
 
 blogRouter.post('/', async (request, response) => {
   const decodedToken = JWT.verify(request.token, process.env.SECRET);
@@ -43,14 +47,27 @@ blogRouter.post('/', async (request, response) => {
   response.status(201).json(savedBlog).end();
 });
 
+// DELETE ROUTE
+
 blogRouter.delete('/:id', async (request, response) => {
+  const decodedToken = JWT.verify(request.token, process.env.SECRET);
+  if (!decodedToken.id) {
+    return response.status(401).json('unauthorized user');
+  }
   const { id } = request.params;
 
   await Blog.findByIdAndDelete(id);
   response.status(200).json('deleted').end();
 });
 
+// UPDATE ROUTE
+
 blogRouter.put('/:id', async (request, response) => {
+  const decodedToken = JWT.verify(request.token, process.env.SECRET);
+  if (!decodedToken.id) {
+    return response.status(401).json('unauthorized user');
+  }
+
   const { title, likes, url } = request.body;
   const { id } = request.params;
 
@@ -65,11 +82,6 @@ blogRouter.put('/:id', async (request, response) => {
 
   const updatedblog = await Blog.findByIdAndUpdate(id, newblog, { new: true });
   response.status(200).json(updatedblog);
-});
-
-blogRouter.delete('/', async (request, response) => {
-  await Blog.deleteMany();
-  response.status(200).json('deleted').end();
 });
 
 module.exports = blogRouter;
