@@ -11,6 +11,7 @@ const {
   unknownEndpoint,
   requestLogger,
   tokenExtractor,
+  userExtractor,
 } = require('./utils/middleware.js');
 
 app.use(cors());
@@ -26,7 +27,7 @@ app.use(
   )
 );
 
-app.use('/api/blogs', blogRouter);
+app.use('/api/blogs', userExtractor, blogRouter);
 app.use('/api/users', userRouter);
 app.use('/api/login', loginRouter);
 
