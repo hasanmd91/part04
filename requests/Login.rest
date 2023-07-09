@@ -3,11 +3,8 @@ Content-Type: application/json
 
 
  {
-   "name" : "abida",
-    "username": "abidalili",
-    "password" : "abidalili2112L"
-
-
+  "username": "hasan91",
+  "password" : "hasan123"
  }
 
 
