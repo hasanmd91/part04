@@ -23,6 +23,10 @@ const errorHandeler = (error, request, response, next) => {
     return response.status(400).json({ error: error.message });
   }
 
+  if (error.name === 'JsonWebTokenError') {
+    return response.status(400).json({ error: error.message });
+  }
+
   next(error);
 };
 
