@@ -8,6 +8,16 @@ const helper = {
     const response = await api.get('/api/users');
     return response.body;
   },
+
+  blogsInDb: async () => {
+    const response = await api.get('/api/blogs');
+    return response.body;
+  },
 };
 
-module.exports = helper;
+const InitialBlogs = [
+  { title: 'Example 1', url: 'https://example.com', likes: 5 },
+  { title: 'Example 2', url: 'https://example.com', likes: 6 },
+];
+
+module.exports = { helper, InitialBlogs };

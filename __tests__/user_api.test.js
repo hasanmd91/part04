@@ -1,4 +1,4 @@
-const helper = require('../utils/helper_test');
+const { helper } = require('../utils/helper_test');
 const supertest = require('supertest');
 const User = require('../models/user');
 const bcrypt = require('bcrypt');
@@ -9,8 +9,8 @@ const api = supertest(app);
 describe('when there is initially one user in db', () => {
   beforeEach(async () => {
     await User.deleteMany({});
-
-    const passwordHash = await bcrypt.hash('test', 10);
+    const password = 'test';
+    const passwordHash = await bcrypt.hash(password, 10);
     const user = User({
       name: 'test1',
       username: 'test123',
