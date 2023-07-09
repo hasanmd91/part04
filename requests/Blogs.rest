@@ -1,0 +1,13 @@
+POST http://localhost:3001/api/blogs
+Content-Type: application/json
+Authorization: bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImFiaWRhbGlsaSIsImlkIjoiNjRhYTdjYTUwNTNhYzI0YmU2YWQ3NGU2IiwiaWF0IjoxNjg4ODk5MDU5fQ.igjGfgr_05Ujq_X4isthDo-lOaEAzNm3Vb8DVG7a1Pk
+
+
+{
+    "title" : "new blogs",
+    "author": "abida hasan",
+    "url": "newblogs url",
+    "likes" : 5
+}
+
+
