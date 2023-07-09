@@ -10,11 +10,14 @@ const {
   errorHandeler,
   unknownEndpoint,
   requestLogger,
+  tokenExtractor,
 } = require('./utils/middleware.js');
 
 app.use(cors());
 app.use(express.static('build'));
 app.use(express.json());
+app.use(tokenExtractor);
+
 app.use(requestLogger);
 morgan.token('body', (req) => JSON.stringify(req.body));
 app.use(

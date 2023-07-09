@@ -14,18 +14,9 @@ blogRouter.get('/:id', async (request, response) => {
   response.status(200).json(blog);
 });
 
-const getTokenFrom = (request) => {
-  const authorization = request.get('authorization');
-  if (authorization && authorization.startsWith('bearer ')) {
-    return authorization.replace('bearer ', '');
-  }
-  return null;
-};
-
 blogRouter.post('/', async (request, response) => {
-  console.log(request);
-  const decodedToken = JWT.verify(getTokenFrom(request), process.env.SECRET);
-  console.log('this is decoded token ', decodedToken);
+  const decodedToken = JWT.verify(request.token, process.env.SECRET);
+
   if (!decodedToken.id) {
     return response.status(401).json('Token Invalid');
   }
