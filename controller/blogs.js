@@ -43,6 +43,11 @@ blogRouter.post('/', async (request, response) => {
 // DELETE ROUTE
 
 blogRouter.delete('/:id', async (request, response) => {
+  const decodedToken = JWT.verify(request.token, process.env.SECRET);
+  if (!decodedToken.id) {
+    return response.status(401).json('unauthorized user');
+  }
+
   const { id } = request.params;
 
   await Blog.findByIdAndDelete(id);
@@ -57,11 +62,11 @@ blogRouter.put('/:id', async (request, response) => {
     return response.status(401).json('unauthorized user');
   }
 
-  const { title, likes, url } = request.body;
+  const { title, url } = request.body;
   const { id } = request.params;
 
   const existingBlog = await Blog.findById(id);
-  const updatedLikes = existingBlog.likes + likes;
+  const updatedLikes = existingBlog.likes + 1;
 
   const newblog = {
     title,
@@ -69,7 +74,9 @@ blogRouter.put('/:id', async (request, response) => {
     likes: updatedLikes,
   };
 
-  const updatedblog = await Blog.findByIdAndUpdate(id, newblog, { new: true });
+  const updatedblog = await Blog.findByIdAndUpdate(id, newblog, {
+    new: true,
+  });
   response.status(200).json(updatedblog);
 });
 

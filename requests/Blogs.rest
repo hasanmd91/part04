@@ -21,3 +21,19 @@ DELETE  http://localhost:3001/api/blogs/64aac3d1888f29d66c37e4f2
 Content-Type: application/json
 Authorization: bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6Imhhc2FuOTEiLCJpZCI6IjY0YWFhMDRmYTE1MTY5ZjM3NzA2YjVmNyIsImlhdCI6MTY4ODkxODM4MSwiZXhwIjoxNjg4OTIxOTgxfQ.UcVoqhjiNYgEm7o_YdM11yVIzurK1ltotraLII8nnNQ
 
+
+####
+
+
+PUT  http://localhost:3001/api/blogs/64cac3e153b6073d60f7ad52 
+Content-Type: application/json
+Authorization: bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6Imhhc2FuOTEiLCJpZCI6IjY0YWFhMDRmYTE1MTY5ZjM3NzA2YjVmNyIsImlhdCI6MTY5MTAxNTI3MSwiZXhwIjoxNjkxMDE4ODcxfQ.V2mT9GIB24PkK1MfnKml2wgmY1Ff-Iu-HabaP1QgVW4
+
+{
+    "title" : "This is a another new test blog",
+    "author": "hasan ilhaan",
+    "url": "http://localhost:3001/myblogs",
+    "likes" : 7
+}
+
+
