@@ -16,8 +16,18 @@ const helper = {
 };
 
 const InitialBlogs = [
-  { title: 'Example 1', url: 'https://example.com', likes: 5 },
-  { title: 'Example 2', url: 'https://example.com', likes: 6 },
+  {
+    title: 'Example 1',
+    url: 'https://example.com',
+    likes: 5,
+    id: '12345667abc',
+  },
+  {
+    title: 'Example 2',
+    url: 'https://example.com',
+    likes: 6,
+    id: '12345667def',
+  },
 ];
 
 module.exports = { helper, InitialBlogs };

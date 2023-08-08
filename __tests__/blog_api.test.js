@@ -164,7 +164,7 @@ describe('PUT /api/blogs', () => {
     const updateBlog = {
       title: 'example title 10',
       url: 'https://example.com',
-      likes: 5,
+      likes: 1,
     };
 
     await api
@@ -175,7 +175,7 @@ describe('PUT /api/blogs', () => {
     const result = await helper.blogsInDb();
     expect(result[0].title).toContain('example title 10');
     expect(result[0].url).toContain('https://example.com');
-    expect(result[0].likes).toBe(10);
+    expect(result[0].likes).toBe(6);
   });
 });
 
