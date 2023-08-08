@@ -18,15 +18,15 @@ const helper = {
 const InitialBlogs = [
   {
     title: 'Example 1',
+    author: 'Example',
     url: 'https://example.com',
     likes: 5,
-    id: '12345667abc',
   },
   {
     title: 'Example 2',
+    author: 'Example',
     url: 'https://example.com',
     likes: 6,
-    id: '12345667def',
   },
 ];
 

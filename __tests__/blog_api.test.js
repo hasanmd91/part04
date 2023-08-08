@@ -162,9 +162,9 @@ describe('PUT /api/blogs', () => {
     const response = await helper.blogsInDb();
     const id = response[0].id;
     const updateBlog = {
-      title: 'example title 10',
+      title: 'Example 1',
+      author: 'Example',
       url: 'https://example.com',
-      likes: 1,
     };
 
     await api
@@ -173,7 +173,7 @@ describe('PUT /api/blogs', () => {
       .send(updateBlog)
       .expect(200);
     const result = await helper.blogsInDb();
-    expect(result[0].title).toContain('example title 10');
+    expect(result[0].title).toContain('Example 1');
     expect(result[0].url).toContain('https://example.com');
     expect(result[0].likes).toBe(6);
   });
